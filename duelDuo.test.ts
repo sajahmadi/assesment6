@@ -31,16 +31,38 @@ test("Clicking the Draw button displays the choices div", async () => {
   expect(displayed).toBe(true);
 });
 
-test('Clicking an "Add to Duo" button displays the player-duo div', async () => {
-  const addToDuoButton = await driver.findElement(
-    By.className("add-to-duo-button")
-  );
-  addToDuoButton.click();
+test('clicking the "add to due" button display the "player-duo"', async () => {
+  await driver.sleep(2000);
+  await driver.findElement(By.id("draw")).click();
+  await driver.sleep(2000);
+  await driver.findElement(By.css(".bot-btn")).click();
 
-  // wait for page to load
-  await driver.sleep(1000);
+  const playerDuo = await driver.findElement(By.id("player-duo"));
 
-  const playerDuoDiv = await driver.findElement(By.id("player-duo"));
-  const displayed = await playerDuoDiv.isDisplayed();
+  const displayed = await playerDuo.isDisplayed();
   expect(displayed).toBe(true);
+  await driver.sleep(2000);
 });
+test('click the "remove from duo" button goes back to the "choices"', async () => {
+  await driver.findElement(By.id("draw")).click();
+  await driver.sleep(3000);
+  await driver.findElement(By.css(".bot-btn")).click();
+  // const backChoices= await driver.findElement(By.id('player-duo'))
+  const selectRoboName = await driver
+    .findElement(By.xpath('//div[@id="player-duo"]/div/h3'))
+    .getText();
+
+  await driver
+    .findElement(By.xpath('//button[text()="Remove from Duo"]'))
+    .click();
+  await driver.sleep(3000);
+  const returnRobo = await driver.findElement(
+    By.xpath(
+      '//div[@id="choices"]/div/h3[contains(text(), ' + selectRoboName + ")]"
+    )
+  );
+  const displayed = await returnRobo.isDisplayed();
+  expect(displayed).toBe(true);
+  await driver.sleep(3000);
+});
+
